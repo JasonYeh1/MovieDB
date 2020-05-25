@@ -1,6 +1,6 @@
 package com.example.moviedb.ui.home;
 
-import com.example.moviedb.model.Movie;
+import com.example.moviedb.model.ListItem;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel;
 public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
-    private LiveData<ArrayList<Movie>> movieList;
+    private LiveData<ArrayList<ListItem>> movieList;
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
