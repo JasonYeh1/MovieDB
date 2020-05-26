@@ -1,24 +1,28 @@
 package com.example.moviedb.ui.home;
 
+import android.app.Application;
+import android.content.Context;
+
 import com.example.moviedb.model.ListItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import androidx.lifecycle.LiveData;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class HomeViewModel extends AndroidViewModel {
 
-    private MutableLiveData<String> mText;
-    private LiveData<ArrayList<ListItem>> movieList;
+    private MutableLiveData<List<ListItem>> movieList;
+    private Context context;
 
-    public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
+        context = application;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public MutableLiveData<List<ListItem>> getMovieList() {
+        movieList = HomeRepo.getMovieList(context);
+        return movieList;
     }
 }

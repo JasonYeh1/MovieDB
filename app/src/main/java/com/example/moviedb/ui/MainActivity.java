@@ -1,7 +1,8 @@
-package com.example.moviedb;
+package com.example.moviedb.ui;
 
 import android.os.Bundle;
 
+import com.example.moviedb.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;

@@ -1,6 +1,8 @@
 package com.example.moviedb.model;
 
+
 public class ListItem {
+    private int uid;
     private String title;
     private String description;
     private String rating;
