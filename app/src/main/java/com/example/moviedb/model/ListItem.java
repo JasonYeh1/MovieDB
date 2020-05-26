@@ -1,12 +1,27 @@
 package com.example.moviedb.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity
 public class ListItem {
+    @PrimaryKey
     private int uid;
+
+    @ColumnInfo(name = "title", typeAffinity = ColumnInfo.TEXT)
     private String title;
+
+    @ColumnInfo(name = "description", typeAffinity = ColumnInfo.TEXT)
     private String description;
+
+    @ColumnInfo(name = "rating", typeAffinity = ColumnInfo.TEXT)
     private String rating;
+
+    @ColumnInfo(name = "imageURL", typeAffinity = ColumnInfo.TEXT)
     private String imageURL;
+
+    @ColumnInfo(name = "type", typeAffinity = ColumnInfo.TEXT)
     private String type;
 
     public ListItem(String title, String description, String rating, String imageURL, String type) {
@@ -15,6 +30,10 @@ public class ListItem {
         this.rating = rating;
         this.imageURL = imageURL;
         this.type = type;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public void setTitle(String title) {
@@ -33,6 +52,14 @@ public class ListItem {
         this.imageURL = imageURL;
     }
 
+    public void setType(String types) {
+        this.type = type;
+    }
+
+    public int getUid(){
+        return uid;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -48,4 +75,9 @@ public class ListItem {
     public String getImageURL() {
         return imageURL;
     }
+
+    public String getType() {
+        return type;
+    }
+
 }

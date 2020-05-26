@@ -21,8 +21,24 @@ public class HomeViewModel extends AndroidViewModel {
         context = application;
     }
 
-    public MutableLiveData<List<ListItem>> getMovieList() {
-        movieList = HomeRepo.getMovieList(context);
+    public MutableLiveData<List<ListItem>> getListItems(String typeOfRequest) {
+        movieList = HomeRepo.getListItems(context, typeOfRequest);
         return movieList;
     }
+
+//    public MutableLiveData<List<ListItem>> getTopRatedMovies(){
+//        return HomeRepo.getTopRatedMovies(context);
+//    }
+//
+//    public MutableLiveData<List<ListItem>> getNowPlayingMovies() {
+//        return HomeRepo.getNowPlayingMovies(context);
+//    }
+//
+//    public MutableLiveData<List<ListItem>> getPopularTvShows() {
+//        return HomeRepo.getPopularTvShows(context);
+//    }
+//
+//    public MutableLiveData<List<ListItem>> getTopRatedTvShows() {
+//        return HomeRepo.getTopRatedTvShows(context);
+//    }
 }

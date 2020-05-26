@@ -34,13 +34,41 @@ public class HomeFragment extends Fragment {
         movieListAdapter = new MovieListAdapter(getContext());
         movieList.setAdapter(movieListAdapter);
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));;
-        homeViewModel.getMovieList().observe(this, new Observer<List<ListItem>>() {
+//        homeViewModel.getPopularMovies().observe(this, new Observer<List<ListItem>>() {
+//            @Override
+//            public void onChanged(List<ListItem> listItems) {
+//                movieListAdapter.setMovieList(listItems);
+//                itemList = listItems;
+//            }
+//        });
+        homeViewModel.getListItems("movie/popular").observe(this, new Observer<List<ListItem>>() {
             @Override
             public void onChanged(List<ListItem> listItems) {
                 movieListAdapter.setMovieList(listItems);
                 itemList = listItems;
             }
         });
+//        homeViewModel.getNowPlayingMovies().observe(this, new Observer<List<ListItem>>() {
+//            @Override
+//            public void onChanged(List<ListItem> listItems) {
+//                movieListAdapter.setMovieList(listItems);
+//                itemList = listItems;
+//            }
+//        });
+//        homeViewModel.getPopularTvShows().observe(this, new Observer<List<ListItem>>() {
+//            @Override
+//            public void onChanged(List<ListItem> listItems) {
+//                movieListAdapter.setMovieList(listItems);
+//                itemList = listItems;
+//            }
+//        });
+//        homeViewModel.getTopRatedTvShows().observe(this, new Observer<List<ListItem>>() {
+//            @Override
+//            public void onChanged(List<ListItem> listItems) {
+//                movieListAdapter.setMovieList(listItems);
+//                itemList = listItems;
+//            }
+//        });
         return root;
     }
 }

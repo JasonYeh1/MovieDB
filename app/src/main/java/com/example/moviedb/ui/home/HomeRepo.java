@@ -21,11 +21,11 @@ import androidx.lifecycle.MutableLiveData;
 
 public class HomeRepo {
 
-    public static MutableLiveData<List<ListItem>> getMovieList(Context context) {
+    public static MutableLiveData<List<ListItem>> getListItems(Context context, String typeOfRequest) {
         final MutableLiveData<List<ListItem>> movieList = new MutableLiveData<>();
         final ArrayList<ListItem> itemsList = new ArrayList<>();
         RequestQueue queue = Volley.newRequestQueue(context);
-        String URL = "https://api.themoviedb.org/3/movie/popular?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1";
+        String URL = String.format("https://api.themoviedb.org/3/%s?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1", typeOfRequest);
         StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -58,4 +58,194 @@ public class HomeRepo {
         queue.add(stringRequest);
         return movieList;
     }
+
+//    public static MutableLiveData<List<ListItem>> getPopularMovies(Context context) {
+//        final MutableLiveData<List<ListItem>> movieList = new MutableLiveData<>();
+//        final ArrayList<ListItem> itemsList = new ArrayList<>();
+//        RequestQueue queue = Volley.newRequestQueue(context);
+//        String URL = "https://api.themoviedb.org/3/movie/popular?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1";
+//        StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject JSONResponse = new JSONObject(response);
+//                    JSONArray jsonArray = JSONResponse.getJSONArray("results");
+//                    for(int i = 0; i < jsonArray.length(); i++) {
+//                        JSONObject currentObject = (JSONObject) jsonArray.get(i);
+//                        String title = currentObject.getString("title");
+//                        String description = currentObject.getString("overview");
+//                        String rating = currentObject.getString("vote_average");
+//                        String imageURL = currentObject.getString("poster_path");
+//                        String type = "movie";
+//                        ListItem newItem =  new ListItem(title, description, rating, imageURL, type);
+//                        itemsList.add(newItem);
+//                    }
+//                    movieList.setValue(itemsList);
+////                    Log.d("HEY", JSONResponse.toString());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.printStackTrace();
+//            }
+//        });
+//
+//        queue.add(stringRequest);
+//        return movieList;
+//    }
+//
+//    public static MutableLiveData<List<ListItem>> getTopRatedMovies(Context context) {
+//        final MutableLiveData<List<ListItem>> movieList = new MutableLiveData<>();
+//        final ArrayList<ListItem> itemsList = new ArrayList<>();
+//        RequestQueue queue = Volley.newRequestQueue(context);
+//        String URL = "https://api.themoviedb.org/3/movie/top_rated?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1";
+//        StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject JSONResponse = new JSONObject(response);
+//                    JSONArray jsonArray = JSONResponse.getJSONArray("results");
+//                    for(int i = 0; i < jsonArray.length(); i++) {
+//                        JSONObject currentObject = (JSONObject) jsonArray.get(i);
+//                        String title = currentObject.getString("title");
+//                        String description = currentObject.getString("overview");
+//                        String rating = currentObject.getString("vote_average");
+//                        String imageURL = currentObject.getString("poster_path");
+//                        String type = "movie";
+//                        ListItem newItem =  new ListItem(title, description, rating, imageURL, type);
+//                        itemsList.add(newItem);
+//                    }
+//                    movieList.setValue(itemsList);
+////                    Log.d("HEY", JSONResponse.toString());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.printStackTrace();
+//            }
+//        });
+//
+//        queue.add(stringRequest);
+//        return movieList;
+//    }
+//
+//    public static MutableLiveData<List<ListItem>> getNowPlayingMovies(Context context) {
+//        final MutableLiveData<List<ListItem>> movieList = new MutableLiveData<>();
+//        final ArrayList<ListItem> itemsList = new ArrayList<>();
+//        RequestQueue queue = Volley.newRequestQueue(context);
+//        String URL = "https://api.themoviedb.org/3/movie/now_playing?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1";
+//        StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject JSONResponse = new JSONObject(response);
+//                    JSONArray jsonArray = JSONResponse.getJSONArray("results");
+//                    for(int i = 0; i < jsonArray.length(); i++) {
+//                        JSONObject currentObject = (JSONObject) jsonArray.get(i);
+//                        String title = currentObject.getString("title");
+//                        String description = currentObject.getString("overview");
+//                        String rating = currentObject.getString("vote_average");
+//                        String imageURL = currentObject.getString("poster_path");
+//                        String type = "movie";
+//                        ListItem newItem =  new ListItem(title, description, rating, imageURL, type);
+//                        itemsList.add(newItem);
+//                    }
+//                    movieList.setValue(itemsList);
+////                    Log.d("HEY", JSONResponse.toString());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.printStackTrace();
+//            }
+//        });
+//
+//        queue.add(stringRequest);
+//        return movieList;
+//    }
+//
+//    public static MutableLiveData<List<ListItem>> getPopularTvShows(Context context) {
+//        final MutableLiveData<List<ListItem>> movieList = new MutableLiveData<>();
+//        final ArrayList<ListItem> itemsList = new ArrayList<>();
+//        RequestQueue queue = Volley.newRequestQueue(context);
+//        String URL = "https://api.themoviedb.org/3/tv/popular?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1";
+//        StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject JSONResponse = new JSONObject(response);
+//                    JSONArray jsonArray = JSONResponse.getJSONArray("results");
+//                    for(int i = 0; i < jsonArray.length(); i++) {
+//                        JSONObject currentObject = (JSONObject) jsonArray.get(i);
+//                        String title = currentObject.getString("title");
+//                        String description = currentObject.getString("overview");
+//                        String rating = currentObject.getString("vote_average");
+//                        String imageURL = currentObject.getString("poster_path");
+//                        String type = "tvshow";
+//                        ListItem newItem =  new ListItem(title, description, rating, imageURL, type);
+//                        itemsList.add(newItem);
+//                    }
+//                    movieList.setValue(itemsList);
+////                    Log.d("HEY", JSONResponse.toString());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.printStackTrace();
+//            }
+//        });
+//
+//        queue.add(stringRequest);
+//        return movieList;
+//    }
+//
+//    public static MutableLiveData<List<ListItem>> getTopRatedTvShows(Context context) {
+//        final MutableLiveData<List<ListItem>> movieList = new MutableLiveData<>();
+//        final ArrayList<ListItem> itemsList = new ArrayList<>();
+//        RequestQueue queue = Volley.newRequestQueue(context);
+//        String URL = "https://api.themoviedb.org/3/tv/top_rated?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1";
+//        StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject JSONResponse = new JSONObject(response);
+//                    JSONArray jsonArray = JSONResponse.getJSONArray("results");
+//                    for(int i = 0; i < jsonArray.length(); i++) {
+//                        JSONObject currentObject = (JSONObject) jsonArray.get(i);
+//                        String title = currentObject.getString("title");
+//                        String description = currentObject.getString("overview");
+//                        String rating = currentObject.getString("vote_average");
+//                        String imageURL = currentObject.getString("poster_path");
+//                        String type = "tvshow";
+//                        ListItem newItem =  new ListItem(title, description, rating, imageURL, type);
+//                        itemsList.add(newItem);
+//                    }
+//                    movieList.setValue(itemsList);
+////                    Log.d("HEY", JSONResponse.toString());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                error.printStackTrace();
+//            }
+//        });
+//
+//        queue.add(stringRequest);
+//        return movieList;
+//    }
 }
