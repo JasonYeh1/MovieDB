@@ -9,36 +9,27 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class HomeViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<ListItem>> movieList;
+    private LiveData<List<ListItem>> movieList;
+    private HomeRepo homeRepo;
     private Context context;
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
         context = application;
+        homeRepo = new HomeRepo(context);
+        movieList = homeRepo.getListItems();
     }
 
-    public MutableLiveData<List<ListItem>> getListItems(String typeOfRequest) {
-        movieList = HomeRepo.getListItems(context, typeOfRequest);
+    public LiveData<List<ListItem>> getListItems() {
         return movieList;
     }
-
-//    public MutableLiveData<List<ListItem>> getTopRatedMovies(){
-//        return HomeRepo.getTopRatedMovies(context);
-//    }
 //
-//    public MutableLiveData<List<ListItem>> getNowPlayingMovies() {
-//        return HomeRepo.getNowPlayingMovies(context);
-//    }
-//
-//    public MutableLiveData<List<ListItem>> getPopularTvShows() {
-//        return HomeRepo.getPopularTvShows(context);
-//    }
-//
-//    public MutableLiveData<List<ListItem>> getTopRatedTvShows() {
-//        return HomeRepo.getTopRatedTvShows(context);
+//    public void makeAPIRequest(String typeOfRequest) {
+//        homeRepo.makeAPIRequest(typeOfRequest);
 //    }
 }

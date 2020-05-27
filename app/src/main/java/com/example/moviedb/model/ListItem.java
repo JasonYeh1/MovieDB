@@ -1,5 +1,6 @@
 package com.example.moviedb.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,7 +8,8 @@ import androidx.room.PrimaryKey;
 @Entity
 public class ListItem {
     @PrimaryKey
-    private int uid;
+    @NonNull
+    private String uid;
 
     @ColumnInfo(name = "title", typeAffinity = ColumnInfo.TEXT)
     private String title;
@@ -24,7 +26,8 @@ public class ListItem {
     @ColumnInfo(name = "type", typeAffinity = ColumnInfo.TEXT)
     private String type;
 
-    public ListItem(String title, String description, String rating, String imageURL, String type) {
+    public ListItem(String uid, String title, String description, String rating, String imageURL, String type) {
+        this.uid = uid;
         this.title = title;
         this.description = description;
         this.rating = rating;
@@ -32,7 +35,7 @@ public class ListItem {
         this.type = type;
     }
 
-    public void setUid(int uid) {
+    public void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -56,7 +59,7 @@ public class ListItem {
         this.type = type;
     }
 
-    public int getUid(){
+    public String getUid(){
         return uid;
     }
 
