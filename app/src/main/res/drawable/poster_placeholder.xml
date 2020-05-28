@@ -1,0 +1,7 @@
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="153dp"
+    android:height="229dp"
+    android:viewportWidth="153"
+    android:viewportHeight="229"
+    android:src="@drawable/image_placeholder">
+</bitmap>

@@ -1,4 +1,4 @@
-package com.example.moviedb.ui.home;
+package com.example.moviedb.ui.search;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,24 +12,22 @@ import com.example.moviedb.R;
 import com.example.moviedb.model.ListItem;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class SearchListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private LayoutInflater inflater;
     private List<ListItem> itemList;
-    private Context context;
 
-    public MovieListAdapter(Context context) {
+    public SearchListAdapter(Context context, List<ListItem> listItems) {
         super();
-        itemList = new ArrayList<>();
+        itemList = listItems;
+        notifyDataSetChanged();
         this.inflater = LayoutInflater.from(context);
-        this.context = context;
+
     }
 
     @NonNull
@@ -44,14 +42,23 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ListItem listItem = itemList.get(position);
         ImageView imageView = ((ItemListViewHolder) holder).poster;
-        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
         String imageURL = listItem.getImageURL();
         if(!imageURL.equals("null")) {
-            Picasso.get().load("https://image.tmdb.org/t/p/w300" + listItem.getImageURL()).placeholder(circularProgressDrawable).noFade().into(imageView);
+            Picasso.get().load("https://image.tmdb.org/t/p/w300" + listItem.getImageURL()).into(imageView);
         }
-        Log.d("Sizes", "" + imageView.getDrawable().getIntrinsicHeight() + " " + imageView.getDrawable().getIntrinsicHeight());
+        Log.d("Sizes", "" + imageView.getHeight() + " " + imageView.getWidth());
         ((ItemListViewHolder)holder).title.setText(listItem.getTitle());
         ((ItemListViewHolder)holder).title.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override
@@ -59,8 +66,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return itemList.size();
     }
 
-    public void setMovieList(List<ListItem> movieList) {
-        itemList = movieList;
+    public void setDataChange(List<ListItem> searchResults) {
+        itemList = searchResults;
         notifyDataSetChanged();
     }
 

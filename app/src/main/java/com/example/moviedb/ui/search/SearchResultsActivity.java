@@ -1,6 +1,9 @@
-package com.example.moviedb.tools;
+package com.example.moviedb.ui.search;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -9,22 +12,49 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.moviedb.R;
 import com.example.moviedb.model.ListItem;
+import com.example.moviedb.tools.APITool;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class APITool {
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-    private static ArrayList<ListItem> resultList = new ArrayList<>();
+public class SearchResultsActivity extends AppCompatActivity {
 
-    public static ArrayList<ListItem> searchRequest(Context context, String queryString) {
-        Log.d("SearchRequst", "IM BEING CALLED");
-        resultList.clear();
+    private RecyclerView searchResultsView;
+    private SearchListAdapter movieListAdapter;
+    ArrayList<ListItem> searchResults;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        searchResults = new ArrayList<>();
+        setContentView(R.layout.activity_search);
+        searchResultsView = findViewById(R.id.search_results);
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchRequest(query);
+            movieListAdapter = new SearchListAdapter(this, searchResults);
+            searchResultsView.setAdapter(movieListAdapter);
+            searchResultsView.setLayoutManager(new LinearLayoutManager(this));
+
+            Log.d("Search", query);
+            setTitle("Results for:  " + "\"" + query + "\"");
+        }
+        super.onCreate(savedInstanceState);
+    }
+
+    public void searchRequest(String queryString) {
         queryString = queryString.replaceAll(" ", "%20");
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(this);
         String URL = String.format("https://api.themoviedb.org/3/search/multi?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&query=%s&page=1&include_adult=false", queryString);
         StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
@@ -49,9 +79,10 @@ public class APITool {
                             String imageURL = currentObject.getString("poster_path");
                             type = type.substring(0,1);
                             ListItem newItem =  new ListItem(uid, title, description, rating, imageURL, type);
-                            resultList.add(newItem);
+                            searchResults.add(newItem);
                         }
                     }
+                    movieListAdapter.setDataChange(searchResults);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -63,7 +94,5 @@ public class APITool {
             }
         });
         queue.add(stringRequest);
-        Log.d("HELLO", "" + resultList.size());
-        return resultList;
     }
 }

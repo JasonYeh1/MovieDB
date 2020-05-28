@@ -3,6 +3,13 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content">
     <item
+        android:id="@+id/search"
+        android:title="Search"
+        android:icon="@drawable/ic_search_button"
+        app:showAsAction="always"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+
+    <item
         android:id="@+id/top_rated_movies"
         android:title="Top Rated Movies"
         />
@@ -24,4 +31,5 @@
         android:id="@+id/top_rated_tv"
         android:title="Top Rated TV Shows"
         />
+
 </menu>

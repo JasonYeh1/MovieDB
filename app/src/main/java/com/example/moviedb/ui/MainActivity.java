@@ -1,8 +1,6 @@
 package com.example.moviedb.ui;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.example.moviedb.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

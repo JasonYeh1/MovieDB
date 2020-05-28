@@ -5,12 +5,14 @@
 
     <ImageView
         android:id="@+id/movie_poster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher_background"
+        android:layout_width="153dp"
+        android:layout_height="229dp"
+        android:src="@drawable/poster_placeholder"
         android:layout_gravity="left"
+        android:visibility="visible"
         android:paddingBottom="2dp"
-        android:paddingTop="2dp">
+        android:paddingTop="2dp"
+        android:paddingLeft="2dp">
 
     </ImageView>
 
