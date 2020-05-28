@@ -1,9 +1,10 @@
 package com.example.moviedb.db;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.strictmode.InstanceCountViolation;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 @Database(entities = {ListItem.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
@@ -100,7 +102,12 @@ public abstract class AppDatabase extends RoomDatabase {
                     for(int i = 0; i < jsonArray.length(); i++) {
                         JSONObject currentObject = (JSONObject) jsonArray.get(i);
                         String uid = currentObject.getString("id");
-                        String title = currentObject.getString("title");
+                        String title;
+                        try {
+                            title = currentObject.getString("title");
+                        } catch(Exception e) {
+                            title = currentObject.getString("name");
+                        }
                         Log.d("Hey", title);
                         String description = currentObject.getString("overview");
                         String rating = currentObject.getString("vote_average");
@@ -131,9 +138,13 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public class InsertItemAsyncTask extends AsyncTask<Void, Void, Void> {
         private ListItem listItem;
+        ProgressBar progressBar;
+        ProgressDialog progressDialog;
 
         public InsertItemAsyncTask(ListItem listItem) {
             this.listItem = listItem;
+            progressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyle);
+            progressDialog = new ProgressDialog(mContext);
         }
 
         @Override
@@ -142,6 +153,17 @@ public abstract class AppDatabase extends RoomDatabase {
             return null;
         }
 
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            progressDialog.show(mContext, "Loading Data", "Fetching Data");
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+            super.onPostExecute(aVoid);
+        }
 
     }
 

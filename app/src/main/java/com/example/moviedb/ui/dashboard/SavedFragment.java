@@ -2,6 +2,7 @@ package com.example.moviedb.ui.dashboard;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -30,6 +31,13 @@ public class SavedFragment extends Fragment {
                 textView.setText(s);
             }
         });
+        setHasOptionsMenu(false);
         return root;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        super.onPrepareOptionsMenu(menu);
     }
 }

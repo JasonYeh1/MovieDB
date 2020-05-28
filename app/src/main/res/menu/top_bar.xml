@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+    <item
+        android:id="@+id/top_rated_movies"
+        android:title="Top Rated Movies"
+        />
+    <item
+        android:id="@+id/popular_movies"
+        android:title="Popular Movies"/>
+
+    <item
+        android:id="@+id/now_playing_movies"
+        android:title="Now Playing Movies"
+        />
+
+    <item
+        android:id="@+id/popular_tv"
+        android:title="Popular TV Shows"
+        />
+
+    <item
+        android:id="@+id/top_rated_tv"
+        android:title="Top Rated TV Shows"
+        />
+</menu>

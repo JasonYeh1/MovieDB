@@ -7,24 +7,29 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.moviedb.R;
 import com.example.moviedb.model.ListItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private LayoutInflater inflater;
     private List<ListItem> itemList;
+    private Context context;
 
     public MovieListAdapter(Context context) {
         super();
         itemList = new ArrayList<>();
         this.inflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @NonNull
@@ -38,8 +43,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ListItem listItem = itemList.get(position);
-
+        ImageView imageView = ((ItemListViewHolder) holder).poster;
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
+        Picasso.get().load("https://image.tmdb.org/t/p/w300" + listItem.getImageURL()).placeholder(circularProgressDrawable).noFade().into(imageView);
         ((ItemListViewHolder)holder).title.setText(listItem.getTitle());
+        ((ItemListViewHolder)holder).title.setVisibility(View.VISIBLE);
     }
 
     @Override
