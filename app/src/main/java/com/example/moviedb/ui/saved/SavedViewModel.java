@@ -3,18 +3,17 @@ package com.example.moviedb.ui.saved;
 import android.app.Application;
 import android.content.Context;
 
-import com.example.moviedb.model.ListItem;
 import com.example.moviedb.model.SavedItem;
-import com.example.moviedb.ui.home.HomeRepo;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+/**
+ * ViewModel for the SavedFragment
+ */
 public class SavedViewModel extends AndroidViewModel {
 
     private LiveData<List<SavedItem>> savedList;

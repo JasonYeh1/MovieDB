@@ -10,6 +10,10 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+/**
+ * ViewModel class for the HomeFragment
+ */
 public class HomeViewModel extends AndroidViewModel {
 
     private LiveData<List<ListItem>> movieList;
@@ -23,6 +27,9 @@ public class HomeViewModel extends AndroidViewModel {
         movieList = homeRepo.getListItems();
     }
 
+    /**
+     * @return Current list of items
+     */
     public LiveData<List<ListItem>> getListItems() {
         return movieList;
     }

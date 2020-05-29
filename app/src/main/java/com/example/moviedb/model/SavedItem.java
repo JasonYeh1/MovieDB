@@ -6,6 +6,14 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
+/**
+ * Room model representing a SavedItem
+ * This table provides data for view and
+ * persists data. This class is identical to ListItem,
+ * however because the ListItem table was dedicated
+ * to just views, another table was required to store
+ * the items that were saved
+ */
 public class SavedItem {
     @PrimaryKey
     @NonNull

@@ -10,6 +10,9 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
+/**
+ * Repository for the HomeFragment
+ */
 public class HomeRepo {
 
     private ListItemDao listItemDao;
@@ -24,6 +27,10 @@ public class HomeRepo {
         movieList = listItemDao.getListItems();
     }
 
+    /**
+     * Method to retrieve the current list of items
+     * @return
+     */
     public LiveData<List<ListItem>> getListItems() {
         return movieList;
     }

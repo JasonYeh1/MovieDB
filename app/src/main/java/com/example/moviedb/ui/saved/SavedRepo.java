@@ -10,6 +10,9 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
+/**
+ * Repository for the SavedFragment
+ */
 public class SavedRepo {
 
     private SavedItemDao savedItemDao;

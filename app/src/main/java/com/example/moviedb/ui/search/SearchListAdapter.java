@@ -17,7 +17,11 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+/**
+ * Adapter to bind data to the views for the SearchResultsActivity
+ */
 public class SearchListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private LayoutInflater inflater;
@@ -46,11 +50,18 @@ public class SearchListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final ListItem listItem = itemList.get(position);
         ImageView imageView = ((ItemListViewHolder) holder).poster;
         String imageURL = listItem.getImageURL();
+
+        //Drawable placeholder for when Picasso is loading the image
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
+
+        //Check if item has a poster path
         if(!imageURL.equals("null")) {
-            Picasso.get().load("https://image.tmdb.org/t/p/w300" + listItem.getImageURL()).into(imageView);
+            Picasso.get().load("https://image.tmdb.org/t/p/w300" + listItem.getImageURL()).placeholder(circularProgressDrawable).into(imageView);
         }
         ((ItemListViewHolder)holder).title.setText(listItem.getTitle());
         ((SearchListAdapter.ItemListViewHolder) holder).rating.setText(listItem.getRating() + "/10");
+
+        //Checks the type of entertainment
         if(listItem.getType().equals("m")) {
             ((SearchListAdapter.ItemListViewHolder)holder).type.setText("Movie");
         } else {
@@ -58,6 +69,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
         ((SearchListAdapter.ItemListViewHolder)holder).description.setText(listItem.getDescription());
         ((ItemListViewHolder)holder).title.setVisibility(View.VISIBLE);
+
+        //OnClickListener to open up a DetailActivity
         ((SearchListAdapter.ItemListViewHolder)holder).view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,11 +86,13 @@ public class SearchListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         });
     }
 
+    //Method required to fix bug with RecyclerView loading data in incorrect positions
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    //Method required to fix bug with RecyclerView loading data in incorrect positions
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -88,11 +103,18 @@ public class SearchListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return itemList.size();
     }
 
+    /**
+     * Method that the Observer uses to update the items list
+     * @param searchResults
+     */
     public void setDataChange(List<ListItem> searchResults) {
         itemList = searchResults;
         notifyDataSetChanged();
     }
 
+    /**
+     * Inner class representing the viewholder
+     */
     private class ItemListViewHolder extends RecyclerView.ViewHolder {
         private View view;
         private ImageView poster;

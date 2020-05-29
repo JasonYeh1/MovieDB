@@ -24,7 +24,12 @@ import org.json.JSONObject;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Activity that appears when a user clicks on an item in any RecyclerView.
+ * Provides more detail about the item, and allows users to save the item
+ */
 public class DetailActivity extends AppCompatActivity {
+    //View declarations
     private TextView titleView;
     private ImageView posterView;
     private TextView ratingView;
@@ -36,6 +41,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        //Setting view associations with the XML
         setContentView(R.layout.activity_details);
         titleView = findViewById(R.id.title_view);
         posterView = findViewById(R.id.movie_poster);
@@ -46,6 +52,7 @@ public class DetailActivity extends AppCompatActivity {
         statusView = findViewById(R.id.status);
         saveButton = findViewById(R.id.save_button);
 
+        //Retrieving Intent extras from calling class
         boolean noSave = getIntent().getBooleanExtra("saveButton", true);
         final String uid = getIntent().getStringExtra("uid");
         final String title = getIntent().getStringExtra("title");
@@ -94,8 +101,15 @@ public class DetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getDetails(String uid, String type) {
+    /**
+     * Method to make an API request to retrieve more detail about the item
+     * @param uid   uniqueId provided by MovieDB
+     * @param type  type of entertainment being requested (movie or tv)
+     */
+    private void getDetails(String uid, String type) {
         final String dateKey;
+
+        //MovieDB has different JSON keys for similar attributes
         if(type.equals("m")) {
             type = "movie";
             dateKey = "release_date";
@@ -103,6 +117,7 @@ public class DetailActivity extends AppCompatActivity {
             type = "tv";
             dateKey = "first_air_date";
         }
+
         RequestQueue queue = Volley.newRequestQueue(this);
         String URL = String.format("https://api.themoviedb.org/3/%s/%s?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US", type, uid);
         StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
@@ -110,6 +125,7 @@ public class DetailActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 try {
                     JSONObject currentObject = new JSONObject(response);
+                    //Setting the text here because Volley is asynchronous
                     releaseView.setText("Release Date: " + currentObject.getString(dateKey));
                     statusView.setText("Status: " + currentObject.getString("status"));
                 } catch (Exception e) {

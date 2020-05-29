@@ -22,17 +22,24 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+/**
+ * Database class following the Room Persistence Library architecture.
+ * Holds a single instance of the database and API requests to populate the DB
+ */
 @Database(entities = {ListItem.class, SavedItem.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
+    //Singular instance of the database
     private static AppDatabase INSTANCE;
 
     private static Context mContext;
     private static boolean alreadyFetched = false;
 
+    //Abstract declaration of each Dao
     public abstract ListItemDao listItemDao();
     public abstract SavedItemDao savedItemDao();
 
+    //Static method allowing access to the database from anywhere in the app
     public static AppDatabase getInstance(Context context) {
         mContext = context;
         if(INSTANCE == null) {
@@ -45,10 +52,17 @@ public abstract class AppDatabase extends RoomDatabase {
         INSTANCE = null;
     }
 
+    /**
+     * Initial request to populate the ListItem table
+     * @param typeOfRequest param that signifies the type of request needed
+     */
     public void makeInitialRequest(final String typeOfRequest) {
+        //Boolean to check if the initial request has already been executed, prevents refetching upon
+        //returning to the fragment
         if(!alreadyFetched) {
             ClearDatabaseAsyncTask clearDatabaseAsyncTask = new ClearDatabaseAsyncTask();
             clearDatabaseAsyncTask.execute();
+
             RequestQueue queue = Volley.newRequestQueue(mContext);
             String URL = String.format("https://api.themoviedb.org/3/%s?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1", typeOfRequest);
             StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
@@ -59,8 +73,11 @@ public abstract class AppDatabase extends RoomDatabase {
                         JSONArray jsonArray = JSONResponse.getJSONArray("results");
                         for(int i = 0; i < jsonArray.length(); i++) {
                             JSONObject currentObject = (JSONObject) jsonArray.get(i);
+
                             String uid = currentObject.getString("id");
                             String title;
+
+                            //MovieDB has different keys for the title depending on if its a movie or tv show
                             try {
                                 title = currentObject.getString("title");
                             } catch(Exception e) {
@@ -71,10 +88,8 @@ public abstract class AppDatabase extends RoomDatabase {
                             String rating = currentObject.getString("vote_average");
                             String imageURL = currentObject.getString("poster_path");
                             String type = typeOfRequest.substring(0,1);
+
                             ListItem newItem =  new ListItem(uid, title, description, rating, imageURL, type);
-//                            SavedItem savedItem = new SavedItem(uid, title, description, rating, imageURL, type);
-//                            SaveItemAsyncTask saveItemAsyncTask = new SaveItemAsyncTask(savedItem);
-//                            saveItemAsyncTask.execute();
                             InsertItemAsyncTask insertItemAsyncTask = new InsertItemAsyncTask(newItem);
                             insertItemAsyncTask.execute();
                         }
@@ -93,11 +108,18 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     }
 
+    /**
+     * Method that handles all API requests after the initial one
+     * particularly for the filter switches
+     * @param typeOfRequest
+     * @param page integer of the page being requested
+     */
     public void makeAPIRequest(final String typeOfRequest, int page) {
         if(page == 1) {
             ClearDatabaseAsyncTask clearDatabaseAsyncTask = new ClearDatabaseAsyncTask();
             clearDatabaseAsyncTask.execute();
         }
+
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String URL = String.format("https://api.themoviedb.org/3/%s?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=%s", typeOfRequest, Integer.toString(page));
         StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
@@ -120,10 +142,10 @@ public abstract class AppDatabase extends RoomDatabase {
                         String rating = currentObject.getString("vote_average");
                         String imageURL = currentObject.getString("poster_path");
                         String type = typeOfRequest.substring(0,1);
+
                         ListItem newItem =  new ListItem(uid, title, description, rating, imageURL, type);
                         InsertItemAsyncTask insertItemAsyncTask = new InsertItemAsyncTask(newItem);
                         insertItemAsyncTask.execute();
-//                        itemsList.add(newItem);
                     }
                     alreadyFetched = true;
                 } catch (Exception e) {
@@ -139,6 +161,8 @@ public abstract class AppDatabase extends RoomDatabase {
         queue.add(stringRequest);
     }
 
+    //AsyncTask to insert a ListItem into the ListItem table.
+    //Access to database cannot be done on the main thread
     public class InsertItemAsyncTask extends AsyncTask<Void, Void, Void> {
         private ListItem listItem;
 
@@ -153,20 +177,9 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     }
 
-    public class SaveItemAsyncTask extends AsyncTask<Void, Void, Void> {
-        private SavedItem savedItem;
-
-        public SaveItemAsyncTask(SavedItem savedItem) {
-            this.savedItem = savedItem;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            savedItemDao().insertSavedItem(savedItem);
-            return null;
-        }
-    }
-
+    //AsyncTask to clear the ListItem table. Makes sure that the view will be empty
+    //before filling it with new items. Otherwise ListItems will persist on app
+    //restarts and filter changes
     public class ClearDatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {

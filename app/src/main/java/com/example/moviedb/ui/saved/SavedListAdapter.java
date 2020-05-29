@@ -24,8 +24,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+/**
+ * Adapter to handle binding the data to the views for the SavedFragment RecyclerView
+ */
 public class SavedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private LayoutInflater inflater;
     private List<SavedItem> itemList;
     private Context context;
@@ -49,14 +51,19 @@ public class SavedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final SavedItem listItem = itemList.get(position);
         ImageView imageView = ((ItemListViewHolder) holder).poster;
+
+        //Drawable placeholder for when Picasso is loading the image
         CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(context);
         String imageURL = listItem.getImageURL();
+
+        //Check if the item has a poster path
         if(!imageURL.equals("null")) {
             Picasso.get().load("https://image.tmdb.org/t/p/w300" + listItem.getImageURL()).placeholder(circularProgressDrawable).noFade().into(imageView);
         }
-        Log.d("Sizes", "" + imageView.getDrawable().getIntrinsicHeight() + " " + imageView.getDrawable().getIntrinsicHeight());
         ((ItemListViewHolder)holder).title.setText(listItem.getTitle());
         ((SavedListAdapter.ItemListViewHolder) holder).rating.setText(listItem.getRating() + "/10");
+
+        //Check the type of entertainment
         if(listItem.getType().equals("m")) {
             ((SavedListAdapter.ItemListViewHolder)holder).type.setText("Movie");
         } else {
@@ -64,6 +71,8 @@ public class SavedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
         ((SavedListAdapter.ItemListViewHolder)holder).description.setText(listItem.getDescription());
         ((ItemListViewHolder)holder).title.setVisibility(View.VISIBLE);
+
+        //OnClickListener to open up a DetailActivity
         ((SavedListAdapter.ItemListViewHolder)holder).view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +88,7 @@ public class SavedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
         });
 
+        //Long click listener to allow user to delete item from table
         ((ItemListViewHolder) holder).view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -113,6 +123,9 @@ public class SavedListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
+    /**
+     * Inner class representing the viewholder
+     */
     private class ItemListViewHolder extends RecyclerView.ViewHolder {
         private View view;
         private ImageView poster;

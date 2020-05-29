@@ -26,13 +26,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Activity displaying the search results
+ */
 public class SearchResultsActivity extends AppCompatActivity {
-
     private RecyclerView searchResultsView;
     private SearchListAdapter movieListAdapter;
 
     ArrayList<ListItem> searchResults;
     private String queryString;
+
+    //Integer representing the next page to load;
     private int pageToLoad = 2;
 
     @Override
@@ -41,6 +45,8 @@ public class SearchResultsActivity extends AppCompatActivity {
         setContentView(R.layout.recycler_view);
         searchResultsView = findViewById(R.id.items_view);
         Intent intent = getIntent();
+
+        //Intent filter to catch search actions from the MainActivity
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             queryString = intent.getStringExtra(SearchManager.QUERY);
             searchRequest(queryString, 1);
@@ -48,24 +54,28 @@ public class SearchResultsActivity extends AppCompatActivity {
             searchResultsView.setAdapter(movieListAdapter);
             searchResultsView.setLayoutManager(new LinearLayoutManager(this));
 
-            Log.d("Search", queryString);
             setTitle("Results for:  " + "\"" + queryString + "\"");
         }
+
+        //Listener to handle the user scrolling to the end of the current list
+        //Fetches the next page of data and appends it to the list
         searchResultsView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if(!recyclerView.canScrollVertically(1)) {
-                    loadNextPage();
+                    searchRequest(queryString, pageToLoad);
                 }
             }
         });
 
+        //Needed to display the back button on the top
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         super.onCreate(savedInstanceState);
     }
 
+    //Needed to correctly handle the back button press
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
@@ -75,6 +85,14 @@ public class SearchResultsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Method to handle the search request to the API
+     * This network call is here because Volley returns its response
+     * asynchronously and within a inner class. Since the onResponse method is in the Activity class,
+     * it is able to access the results of the Volley request by adding the items to a class List object
+     * @param queryString
+     * @param nextPageToLoad
+     */
     private void searchRequest(String queryString, final int nextPageToLoad) {
         queryString = queryString.replaceAll(" ", "%20");
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -106,8 +124,12 @@ public class SearchResultsActivity extends AppCompatActivity {
                             searchResults.add(newItem);
                         }
                     }
+
+                    //Checking to see if the API returned more data
                     if(searchResults.size() > originalListSize) {
                         movieListAdapter.setDataChange(searchResults);
+
+                        //Page to load is incremented here only when there is more data to load
                         pageToLoad++;
                     }
                 } catch (Exception e) {
@@ -121,10 +143,5 @@ public class SearchResultsActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
-    }
-
-    private void loadNextPage() {
-        Log.d("Next page to load", "" + pageToLoad);
-        searchRequest(queryString, pageToLoad);
     }
 }

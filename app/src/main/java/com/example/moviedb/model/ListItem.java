@@ -6,23 +6,35 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
+/**
+ * Room model representing a ListItem
+ * This table is only used for providing data
+ * for views and not for persisting it
+ */
 public class ListItem {
     @PrimaryKey
     @NonNull
+    //Attribute representing the uid of the item
+    @ColumnInfo(name = "uid", typeAffinity = ColumnInfo.TEXT)
     private String uid;
 
+    //Attribute representing the title of the item
     @ColumnInfo(name = "title", typeAffinity = ColumnInfo.TEXT)
     private String title;
 
+    //Attribute representing the description of the item
     @ColumnInfo(name = "description", typeAffinity = ColumnInfo.TEXT)
     private String description;
 
+    //Attribute representing the rating of the item
     @ColumnInfo(name = "rating", typeAffinity = ColumnInfo.TEXT)
     private String rating;
 
+    //Attribute representing the imageURL of the item
     @ColumnInfo(name = "imageURL", typeAffinity = ColumnInfo.TEXT)
     private String imageURL;
 
+    //Attribute representing the type of the item
     @ColumnInfo(name = "type", typeAffinity = ColumnInfo.TEXT)
     private String type;
 
