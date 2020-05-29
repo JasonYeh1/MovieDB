@@ -1,7 +1,6 @@
 package com.example.moviedb.ui.search;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +13,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.moviedb.R;
 import com.example.moviedb.model.ListItem;
-import com.example.moviedb.tools.APITool;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +30,8 @@ public class SearchResultsActivity extends AppCompatActivity {
     private RecyclerView searchResultsView;
     private SearchListAdapter movieListAdapter;
     ArrayList<ListItem> searchResults;
+    private String queryString;
+    private int pageToLoad = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,22 +40,35 @@ public class SearchResultsActivity extends AppCompatActivity {
         searchResultsView = findViewById(R.id.search_results);
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            searchRequest(query);
+            queryString = intent.getStringExtra(SearchManager.QUERY);
+            searchRequest(queryString, 1);
             movieListAdapter = new SearchListAdapter(this, searchResults);
             searchResultsView.setAdapter(movieListAdapter);
             searchResultsView.setLayoutManager(new LinearLayoutManager(this));
 
-            Log.d("Search", query);
-            setTitle("Results for:  " + "\"" + query + "\"");
+            Log.d("Search", queryString);
+            setTitle("Results for:  " + "\"" + queryString + "\"");
         }
+        searchResultsView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!recyclerView.canScrollVertically(1)) {
+                    loadNextPage();
+                }
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         super.onCreate(savedInstanceState);
     }
 
-    public void searchRequest(String queryString) {
+    private void searchRequest(String queryString, final int nextPageToLoad) {
         queryString = queryString.replaceAll(" ", "%20");
         RequestQueue queue = Volley.newRequestQueue(this);
-        String URL = String.format("https://api.themoviedb.org/3/search/multi?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&query=%s&page=1&include_adult=false", queryString);
+        String URL = String.format("https://api.themoviedb.org/3/search/multi?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&query=%s&page=%s&include_adult=false", queryString, Integer.toString(nextPageToLoad));
+        final int originalListSize = searchResults.size();
         StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -82,7 +95,10 @@ public class SearchResultsActivity extends AppCompatActivity {
                             searchResults.add(newItem);
                         }
                     }
-                    movieListAdapter.setDataChange(searchResults);
+                    if(searchResults.size() > originalListSize) {
+                        movieListAdapter.setDataChange(searchResults);
+                        pageToLoad++;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -94,5 +110,10 @@ public class SearchResultsActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
+    }
+
+    private void loadNextPage() {
+        Log.d("Next page to load", "" + pageToLoad);
+        searchRequest(queryString, pageToLoad);
     }
 }

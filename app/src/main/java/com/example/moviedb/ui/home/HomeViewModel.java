@@ -10,8 +10,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 public class HomeViewModel extends AndroidViewModel {
 
     private LiveData<List<ListItem>> movieList;
@@ -28,8 +26,4 @@ public class HomeViewModel extends AndroidViewModel {
     public LiveData<List<ListItem>> getListItems() {
         return movieList;
     }
-//
-//    public void makeAPIRequest(String typeOfRequest) {
-//        homeRepo.makeAPIRequest(typeOfRequest);
-//    }
 }

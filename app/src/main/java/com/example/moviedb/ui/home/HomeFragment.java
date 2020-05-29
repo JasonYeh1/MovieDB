@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,16 +32,16 @@ public class HomeFragment extends Fragment {
 
     private Context context;
     private HomeViewModel homeViewModel;
-    private HomeRepo homeRepo;
     private RecyclerView movieList;
     private MovieListAdapter movieListAdapter;
+    private String filter;
+    private int nextPageToLoad = 1;
 
     public View onCreateView(@NonNull LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         context = getContext();
-        homeRepo = new HomeRepo(context);
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
-        String filter = sharedPreferences.getString("filter", "movie/top_rated");
+        filter = sharedPreferences.getString("filter", "movie/top_rated");
         AppDatabase.getInstance(context).makeInitialRequest(filter);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         movieList = root.findViewById(R.id.movie_list);
@@ -55,6 +56,15 @@ public class HomeFragment extends Fragment {
         });
         setHasOptionsMenu(true);
 
+        movieList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!recyclerView.canScrollVertically(1)) {
+                    loadNextPage();
+                }
+            }
+        });
         return root;
     }
 
@@ -73,27 +83,32 @@ public class HomeFragment extends Fragment {
     // handle button activities
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String filter = "none";
         if(item.getItemId() == R.id.top_rated_movies) {
             filter = "movie/top_rated";
-            AppDatabase.getInstance(context).changeAPIRequest(filter);
+            AppDatabase.getInstance(context).makeAPIRequest(filter, 1);
         } else if(item.getItemId() == R.id.popular_movies) {
             filter = "movie/popular";
-            AppDatabase.getInstance(context).changeAPIRequest(filter);
+            AppDatabase.getInstance(context).makeAPIRequest(filter, 1);
         } else if(item.getItemId() == R.id.now_playing_movies)  {
             filter = "movie/now_playing";
-            AppDatabase.getInstance(context).changeAPIRequest(filter);
+            AppDatabase.getInstance(context).makeAPIRequest(filter, 1);
         } else if(item.getItemId() == R.id.popular_tv) {
             filter = "tv/popular";
-            AppDatabase.getInstance(context).changeAPIRequest(filter);
+            AppDatabase.getInstance(context).makeAPIRequest(filter, 1);
         } else if(item.getItemId() == R.id.top_rated_tv) {
             filter = "tv/top_rated";
-            AppDatabase.getInstance(context).changeAPIRequest(filter);
+            AppDatabase.getInstance(context).makeAPIRequest(filter, 1);
         }
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("filter", filter);
         editor.apply();
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadNextPage() {
+        nextPageToLoad += 1;
+        Log.d("Next page to load", "" + nextPageToLoad);
+        AppDatabase.getInstance(context).makeAPIRequest(filter, nextPageToLoad);
     }
 }

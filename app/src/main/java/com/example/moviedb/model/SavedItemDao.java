@@ -9,14 +9,13 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 @Dao
-public interface ListItemDao {
-
+public interface SavedItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertListItem(ListItem listItem);
+    void insertSavedItem(SavedItem savedItem);
 
-    @Query("SELECT * from ListItem")
-    LiveData<List<ListItem>> getListItems();
+    @Query("SELECT * from SavedItem")
+    LiveData<List<SavedItem>> getSavedItems();
 
-    @Query("DELETE from ListItem")
-    void clearTable();
+    @Query("DELETE FROM SavedItem WHERE uid = :uniqueId")
+    void deleteSavedItem(String uniqueId);
 }

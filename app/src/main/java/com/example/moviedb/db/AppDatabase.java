@@ -1,10 +1,8 @@
 package com.example.moviedb.db;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -14,17 +12,17 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.moviedb.model.ListItem;
 import com.example.moviedb.model.ListItemDao;
+import com.example.moviedb.model.SavedItem;
+import com.example.moviedb.model.SavedItemDao;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {ListItem.class}, version = 1, exportSchema = false)
+@Database(entities = {ListItem.class, SavedItem.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
@@ -33,6 +31,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static boolean alreadyFetched = false;
 
     public abstract ListItemDao listItemDao();
+    public abstract SavedItemDao savedItemDao();
 
     public static AppDatabase getInstance(Context context) {
         mContext = context;
@@ -73,13 +72,13 @@ public abstract class AppDatabase extends RoomDatabase {
                             String imageURL = currentObject.getString("poster_path");
                             String type = typeOfRequest.substring(0,1);
                             ListItem newItem =  new ListItem(uid, title, description, rating, imageURL, type);
+//                            SavedItem savedItem = new SavedItem(uid, title, description, rating, imageURL, type);
+//                            SaveItemAsyncTask saveItemAsyncTask = new SaveItemAsyncTask(savedItem);
+//                            saveItemAsyncTask.execute();
                             InsertItemAsyncTask insertItemAsyncTask = new InsertItemAsyncTask(newItem);
                             insertItemAsyncTask.execute();
-//                        itemsList.add(newItem);
                         }
                         alreadyFetched = true;
-//                    movieList.setValue(itemsList);
-//                    Log.d("HEY", JSONResponse.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -94,11 +93,13 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     }
 
-    public void changeAPIRequest(final String typeOfRequest) {
-        ClearDatabaseAsyncTask clearDatabaseAsyncTask = new ClearDatabaseAsyncTask();
-        clearDatabaseAsyncTask.execute();
+    public void makeAPIRequest(final String typeOfRequest, int page) {
+        if(page == 1) {
+            ClearDatabaseAsyncTask clearDatabaseAsyncTask = new ClearDatabaseAsyncTask();
+            clearDatabaseAsyncTask.execute();
+        }
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String URL = String.format("https://api.themoviedb.org/3/%s?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=1", typeOfRequest);
+        String URL = String.format("https://api.themoviedb.org/3/%s?api_key=900fc2bf9aca7123813b54fd5d90a302&language=en-US&page=%s", typeOfRequest, Integer.toString(page));
         StringRequest stringRequest= new StringRequest(Request.Method.GET, URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -125,8 +126,6 @@ public abstract class AppDatabase extends RoomDatabase {
 //                        itemsList.add(newItem);
                     }
                     alreadyFetched = true;
-//                    movieList.setValue(itemsList);
-//                    Log.d("HEY", JSONResponse.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -154,10 +153,24 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     }
 
+    public class SaveItemAsyncTask extends AsyncTask<Void, Void, Void> {
+        private SavedItem savedItem;
+
+        public SaveItemAsyncTask(SavedItem savedItem) {
+            this.savedItem = savedItem;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            savedItemDao().insertSavedItem(savedItem);
+            return null;
+        }
+    }
+
     public class ClearDatabaseAsyncTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            INSTANCE.clearAllTables();
+            listItemDao().clearTable();
             return null;
         }
     }
