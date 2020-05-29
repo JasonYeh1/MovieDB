@@ -43,8 +43,8 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
         filter = sharedPreferences.getString("filter", "movie/top_rated");
         AppDatabase.getInstance(context).makeInitialRequest(filter);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        movieList = root.findViewById(R.id.movie_list);
+        View root = inflater.inflate(R.layout.recycler_view, container, false);
+        movieList = root.findViewById(R.id.items_view);
         movieListAdapter = new MovieListAdapter(getContext());
         movieList.setAdapter(movieListAdapter);
         movieList.setLayoutManager(new LinearLayoutManager(getActivity()));

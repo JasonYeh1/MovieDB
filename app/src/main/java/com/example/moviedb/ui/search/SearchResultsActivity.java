@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,6 +30,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private RecyclerView searchResultsView;
     private SearchListAdapter movieListAdapter;
+
     ArrayList<ListItem> searchResults;
     private String queryString;
     private int pageToLoad = 2;
@@ -36,8 +38,8 @@ public class SearchResultsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         searchResults = new ArrayList<>();
-        setContentView(R.layout.activity_search);
-        searchResultsView = findViewById(R.id.search_results);
+        setContentView(R.layout.recycler_view);
+        searchResultsView = findViewById(R.id.items_view);
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             queryString = intent.getStringExtra(SearchManager.QUERY);
@@ -62,6 +64,15 @@ public class SearchResultsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void searchRequest(String queryString, final int nextPageToLoad) {

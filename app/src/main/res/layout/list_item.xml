@@ -20,10 +20,48 @@
         android:id="@+id/movie_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_marginLeft="10dp"
+        android:paddingTop="2dp"
+        android:paddingRight="2dp"
         android:visibility="invisible"
+        android:textSize="20dp"
+        android:textColor="@color/cardview_light_background"
         android:layout_toRightOf="@id/movie_poster">
 
+    </TextView>
+
+    <TextView
+        android:id="@+id/item_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/movie_title"
+        android:layout_toRightOf="@id/movie_poster"
+        android:paddingTop="2dp"
+        android:textColor="@color/lightGray">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/item_type"
+        android:layout_below="@id/item_rating"
+        android:layout_toRightOf="@id/movie_poster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:paddingTop="2dp"
+        android:textColor="@color/lightGray">
+    </TextView>
+
+    <TextView
+        android:id="@+id/item_description"
+        android:layout_below="@id/item_type"
+        android:layout_toRightOf="@id/movie_poster"
+        android:layout_width="wrap_content"
+        android:layout_height="111dp"
+        android:layout_marginLeft="10dp"
+        android:paddingTop="10dp"
+        android:ellipsize="marquee"
+        android:textColor="@color/lightGray">
     </TextView>
 </RelativeLayout>

@@ -55,11 +55,18 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         Log.d("Sizes", "" + imageView.getDrawable().getIntrinsicHeight() + " " + imageView.getDrawable().getIntrinsicHeight());
         ((ItemListViewHolder)holder).title.setText(listItem.getTitle());
         ((ItemListViewHolder)holder).title.setVisibility(View.VISIBLE);
-
-        ((ItemListViewHolder) holder).view.setOnClickListener(new View.OnClickListener() {
+        ((ItemListViewHolder) holder).rating.setText(listItem.getRating() + "/10");
+        if(listItem.getType().equals("m")) {
+            ((ItemListViewHolder)holder).type.setText("Movie");
+        } else {
+            ((ItemListViewHolder)holder).type.setText("TV Show");
+        }
+        ((ItemListViewHolder)holder).description.setText(listItem.getDescription());
+        ((ItemListViewHolder)holder).view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailActivity.class);
+                Log.d("Class", this.getClass().toString());
                 intent.putExtra("uid", listItem.getUid());
                 intent.putExtra("title", listItem.getTitle());
                 intent.putExtra("description", listItem.getDescription());
@@ -84,13 +91,16 @@ public class MovieListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private class ItemListViewHolder extends RecyclerView.ViewHolder {
         private View view;
         private ImageView poster;
-        private TextView title;
+        private TextView title, rating, type, description;
 
         public ItemListViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             poster = itemView.findViewById(R.id.movie_poster);
             title = itemView.findViewById(R.id.movie_title);
+            rating = itemView.findViewById(R.id.item_rating);
+            type = itemView.findViewById(R.id.item_type);
+            description = itemView.findViewById(R.id.item_description);
         }
     }
 }
